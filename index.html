@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Task & Earning Tracker - Animated</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 900px; margin: 20px auto; background: #f5f7fa; }
+  h1 { text-align: center; color: #004080; }
+  a {
+    display: inline-block; margin-bottom: 15px; color: #004080; text-decoration: none;
+    font-weight: bold; transition: color 0.3s ease;
+  }
+  a:hover { color: #0066cc; }
+  input, select, textarea, button {
+    padding: 8px; margin: 5px 0; width: 100%; border: 1px solid #aaa;
+    border-radius: 4px; font-size: 1rem; transition: border-color 0.3s ease;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: #004080; outline: none;
+  }
+  button {
+    background: #004080; color: white; cursor: pointer; border: none;
+    transition: background-color 0.4s ease;
+  }
+  button:hover { background: #0066cc; }
+  .container { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 0 8px rgba(0,0,0,0.1);}
+  table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+  th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+  th { background: #004080; color: white; }
+  tbody tr {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeInUp 0.4s forwards;
+  }
+  tbody tr:hover {
+    background-color: #e6f0ff;
+  }
+  .summary {
+    margin-top: 15px; padding: 10px; background: #dbe9f9; border-radius: 8px; font-weight: bold;
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>Task & Earning Tracker</h1>
+<a href="dashboard.html">📊 View Dashboard</a>
+
+<div class="container">
+  <h2>Add Task / Earning</h2>
+  <form id="taskForm">
+    <label>Type</label>
+    <select id="recordType">
+      <option value="task">Task</option>
+      <option value="earning">Earning</option>
+    </select>
+
+    <label>Client Name</label>
+    <input type="text" id="client" required />
+
+    <label>Work Details</label>
+    <textarea id="work" rows="3" required></textarea>
+
+    <label>Earning (₹)</label>
+    <input type="number" id="amount" min="0" required />
+
+    <label>Date</label>
+    <input type="date" id="date" required />
+
+    <label>Status</label>
+    <select id="status">
+      <option value="pending">Pending</option>
+      <option value="completed">Completed</option>
+    </select>
+
+    <button type="submit">Add Record</button>
+  </form>
+</div>
+
+<div class="container">
+  <h2>Records</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th><th>Client</th><th>Work</th><th>Earning (₹)</th><th>Date</th><th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="recordsTableBody"></tbody>
+  </table>
+  <div class="summary" id="summary"></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  databaseURL: "YOUR_DATABASE_URL",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+function generateID(type, count) {
+  let prefix = type === "task" ? "T" : "E";
+  return prefix + String(count + 1).padStart(4, "0");
+}
+
+document.getElementById('taskForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const type = document.getElementById('recordType').value;
+  const client = document.getElementById('client').value.trim();
+  const work = document.getElementById('work').value.trim();
+  const amount = parseFloat(document.getElementById('amount').value);
+  const date = document.getElementById('date').value;
+  const status = document.getElementById('status').value;
+
+  let snapshot = await db.ref('records').once('value');
+  let count = snapshot.numChildren();
+  let newId = generateID(type, count);
+
+  const newRecord = { id: newId, type, client, work, amount, date, status, timestamp: Date.now() };
+  db.ref('records').push(newRecord).then(() => {
+    document.getElementById('taskForm').reset();
+  });
+});
+
+const tableBody = document.getElementById('recordsTableBody');
+const summary = document.getElementById('summary');
+
+db.ref('records').on('value', (snapshot) => {
+  tableBody.innerHTML = '';
+  let totalEarnings = 0, completed = 0, pending = 0;
+  let delay = 0;
+  snapshot.forEach(child => {
+    const r = child.val();
+    const tr = document.createElement('tr');
+    tr.style.animationDelay = `${delay}s`;
+    tr.innerHTML = `<td>${r.id}</td><td>${r.client}</td><td>${r.work}</td><td>₹${r.amount}</td><td>${r.date}</td><td>${r.status}</td>`;
+    tableBody.appendChild(tr);
+    delay += 0.1;
+    if (r.type === "earning" || r.type === "task") totalEarnings += r.amount;
+    if (r.status === "completed") completed++;
+    if (r.status === "pending") pending++;
+  });
+  summary.textContent = `Total Earnings: ₹${totalEarnings} | Completed: ${completed} | Pending: ${pending}`;
+});
+</script>
+</body>
+</html>
