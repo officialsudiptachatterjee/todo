@@ -1,161 +1,396 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Task & Earning Tracker - Animated</title>
-<style>
-  body { font-family: Arial, sans-serif; max-width: 900px; margin: 20px auto; background: #f5f7fa; }
-  h1 { text-align: center; color: #004080; }
-  a {
-    display: inline-block; margin-bottom: 15px; color: #004080; text-decoration: none;
-    font-weight: bold; transition: color 0.3s ease;
-  }
-  a:hover { color: #0066cc; }
-  input, select, textarea, button {
-    padding: 8px; margin: 5px 0; width: 100%; border: 1px solid #aaa;
-    border-radius: 4px; font-size: 1rem; transition: border-color 0.3s ease;
-  }
-  input:focus, select:focus, textarea:focus {
-    border-color: #004080; outline: none;
-  }
-  button {
-    background: #004080; color: white; cursor: pointer; border: none;
-    transition: background-color 0.4s ease;
-  }
-  button:hover { background: #0066cc; }
-  .container { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 0 8px rgba(0,0,0,0.1);}
-  table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-  th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-  th { background: #004080; color: white; }
-  tbody tr {
-    opacity: 0;
-    transform: translateY(10px);
-    animation: fadeInUp 0.4s forwards;
-  }
-  tbody tr:hover {
-    background-color: #e6f0ff;
-  }
-  .summary {
-    margin-top: 15px; padding: 10px; background: #dbe9f9; border-radius: 8px; font-weight: bold;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vivid Orange Task & Earning Tracker</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
-  @keyframes fadeInUp {
-    to {
-      opacity: 1;
-      transform: translateY(0);
+    * {
+      box-sizing: border-box;
     }
-  }
-</style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0; padding: 0;
+      background: #001F3F; /* Deep Navy */
+      color: #fff;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-y: scroll;
+    }
+
+    h1 {
+      text-align: center;
+      font-weight: 700;
+      font-size: 3rem;
+      padding: 40px 20px 10px;
+      color: #FF6F00; /* Vivid Orange */
+      text-shadow: 0 0 12px #FF6F00;
+      user-select: none;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 20px auto 60px;
+      background: #012548;
+      border-radius: 16px;
+      padding: 30px 40px;
+      box-shadow:
+        0 0 30px #FF6F00,
+        inset 0 0 40px 10px #FF6F00;
+      animation: glowingShadow 4s ease-in-out infinite alternate;
+    }
+    @keyframes glowingShadow {
+      0% {
+        box-shadow:
+          0 0 25px #FF6F00,
+          inset 0 0 40px 10px #FF6F00;
+      }
+      100% {
+        box-shadow:
+          0 0 45px #FF6F00,
+          inset 0 0 55px 20px #FF6F00;
+      }
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: 600;
+      font-size: 1rem;
+      color: #FF4081; /* Bright Pink */
+      user-select: none;
+    }
+
+    input, select, textarea, button {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 1rem;
+      border-radius: 12px;
+      border: none;
+      outline: none;
+      background: #014871;
+      color: #fff;
+      font-weight: 600;
+      box-shadow:
+        0 0 10px #FF6F00 inset;
+      transition: background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+      user-select: text;
+    }
+    input::placeholder, textarea::placeholder {
+      color: #FF6F00;
+      opacity: 0.7;
+    }
+    input:focus, select:focus, textarea:focus {
+      background: #FF6F00;
+      color: #001F3F;
+      font-weight: 700;
+      box-shadow:
+        0 0 18px #FF6F00;
+    }
+
+    button {
+      margin-top: 30px;
+      background: linear-gradient(45deg, #FF6F00, #FF8F00);
+      color: #001F3F;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 0 30px #FF6F00;
+      transition: background 0.4s ease, box-shadow 0.4s ease, transform 0.3s ease;
+      user-select: none;
+    }
+    button:hover {
+      background: linear-gradient(45deg, #FF8F00, #FFA726);
+      box-shadow: 0 0 45px #FF8F00;
+      transform: translateY(-3px);
+      color: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 12px;
+      margin-top: 30px;
+      user-select: none;
+    }
+    thead th {
+      color: #FF4081;
+      font-weight: 700;
+      font-size: 1rem;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #FF4081;
+      letter-spacing: 0.1em;
+      text-align: left;
+    }
+    tbody tr {
+      background: #013455;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px #FF6F00;
+      transition: background-color 0.3s ease;
+      cursor: default;
+      opacity: 0;
+      animation: fadeInUp 0.4s forwards;
+    }
+    tbody tr:hover {
+      background: #FF6F00;
+      color: #001F3F;
+      box-shadow: 0 10px 35px #FF6F00;
+    }
+    tbody td {
+      padding: 14px 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      white-space: nowrap;
+    }
+
+    .edit-btn {
+      background: transparent;
+      border: 2px solid #FF6F00;
+      border-radius: 10px;
+      padding: 5px 12px;
+      color: #FF6F00;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.85rem;
+      user-select: none;
+    }
+    .edit-btn:hover {
+      background: #FF6F00;
+      color: #001F3F;
+      border-color: #FF6F00;
+      box-shadow: 0 0 15px #FF6F00;
+      transform: scale(1.1);
+    }
+
+    .summary {
+      margin-top: 25px;
+      padding: 16px 24px;
+      background: #FF6F00;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      text-align: center;
+      color: #001F3F;
+      letter-spacing: 0.05em;
+      user-select: none;
+      box-shadow: 0 0 30px #FF6F00;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+    }
+
+    #popup {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #FF6F00;
+      color: #001F3F;
+      padding: 14px 24px;
+      border-radius: 30px;
+      box-shadow: 0 0 30px #FF6F00;
+      font-weight: 700;
+      font-size: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      user-select: none;
+      z-index: 9999;
+      animation-fill-mode: forwards;
+    }
+
+    .popup-show {
+      animation: popupFadeIn 0.5s ease forwards, popupFadeOut 0.5s ease 1.5s forwards;
+      pointer-events: auto;
+    }
+
+    @keyframes popupFadeIn {
+      from { opacity: 0; transform: translateX(50px);}
+      to { opacity: 1; transform: translateX(0);}
+    }
+    @keyframes popupFadeOut {
+      from { opacity: 1; transform: translateX(0);}
+      to { opacity: 0; transform: translateX(50px);}
+    }
+  </style>
 </head>
 <body>
 
-<h1>Task & Earning Tracker</h1>
-<a href="dashboard.html">📊 View Dashboard</a>
+  <h1>Vivid Orange Task & Earning Tracker</h1>
 
-<div class="container">
-  <h2>Add Task / Earning</h2>
-  <form id="taskForm">
-    <label>Type</label>
-    <select id="recordType">
-      <option value="task">Task</option>
-      <option value="earning">Earning</option>
-    </select>
+  <div class="container" aria-label="Add new task or earning record">
+    <form id="taskForm" autocomplete="off">
+      <label for="recordType">Record Type</label>
+      <select id="recordType" name="recordType" required>
+        <option value="task">Task</option>
+        <option value="earning">Earning</option>
+      </select>
 
-    <label>Client Name</label>
-    <input type="text" id="client" required />
+      <label for="client">Client Name</label>
+      <input type="text" id="client" name="client" required placeholder="Enter client name" />
 
-    <label>Work Details</label>
-    <textarea id="work" rows="3" required></textarea>
+      <label for="work">Work Details</label>
+      <textarea id="work" name="work" rows="3" required placeholder="Describe work details"></textarea>
 
-    <label>Earning (₹)</label>
-    <input type="number" id="amount" min="0" required />
+      <label for="amount">Amount (₹)</label>
+      <input type="number" id="amount" name="amount" min="0" step="0.01" required placeholder="Enter amount" />
 
-    <label>Date</label>
-    <input type="date" id="date" required />
+      <label for="date">Date</label>
+      <input type="date" id="date" name="date" required />
 
-    <label>Status</label>
-    <select id="status">
-      <option value="pending">Pending</option>
-      <option value="completed">Completed</option>
-    </select>
+      <label for="status">Status</label>
+      <select id="status" name="status" required>
+        <option value="pending">Pending</option>
+        <option value="completed">Completed</option>
+      </select>
 
-    <button type="submit">Add Record</button>
-  </form>
-</div>
+      <button type="submit">Add Record</button>
+    </form>
+  </div>
 
-<div class="container">
-  <h2>Records</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th><th>Client</th><th>Work</th><th>Earning (₹)</th><th>Date</th><th>Status</th>
-      </tr>
-    </thead>
-    <tbody id="recordsTableBody"></tbody>
-  </table>
-  <div class="summary" id="summary"></div>
-</div>
+  <div class="container" aria-label="List of tasks and earnings">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th><th>Client</th><th>Work</th><th>Amount (₹)</th><th>Date</th><th>Status</th><th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="recordsTableBody" aria-live="polite" aria-relevant="all"></tbody>
+    </table>
+    <div class="summary" id="summary" aria-atomic="true">Loading...</div>
+  </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-<script>
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  databaseURL: "YOUR_DATABASE_URL",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+  <div id="popup" role="alert" aria-live="assertive">Record added successfully!</div>
 
-function generateID(type, count) {
-  let prefix = type === "task" ? "T" : "E";
-  return prefix + String(count + 1).padStart(4, "0");
-}
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue, get, update } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
-document.getElementById('taskForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const type = document.getElementById('recordType').value;
-  const client = document.getElementById('client').value.trim();
-  const work = document.getElementById('work').value.trim();
-  const amount = parseFloat(document.getElementById('amount').value);
-  const date = document.getElementById('date').value;
-  const status = document.getElementById('status').value;
+    const firebaseConfig = {
+      apiKey: "AIzaSyBtv24xaZD2ZW-gxRsFnke087jCcL1LUTM",
+      authDomain: "sudiptakpi-68c8f.firebaseapp.com",
+      databaseURL: "https://sudiptakpi-68c8f-default-rtdb.firebaseio.com",
+      projectId: "sudiptakpi-68c8f",
+      storageBucket: "sudiptakpi-68c8f.firebasestorage.app",
+      messagingSenderId: "543704606051",
+      appId: "1:543704606051:web:6071848730da6e577e1f56",
+      measurementId: "G-552VHS088R"
+    };
 
-  let snapshot = await db.ref('records').once('value');
-  let count = snapshot.numChildren();
-  let newId = generateID(type, count);
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-  const newRecord = { id: newId, type, client, work, amount, date, status, timestamp: Date.now() };
-  db.ref('records').push(newRecord).then(() => {
-    document.getElementById('taskForm').reset();
-  });
-});
+    // Generate unique ID starting with T or E + 4 digits
+    async function generateID(type) {
+      const recordsRef = ref(db, 'records');
+      const snapshot = await get(recordsRef);
+      const data = snapshot.val() || {};
+      const count = Object.keys(data).length;
+      const prefix = type === "task" ? "T" : "E";
+      return prefix + String(count + 1).padStart(4, '0');
+    }
 
-const tableBody = document.getElementById('recordsTableBody');
-const summary = document.getElementById('summary');
+    const taskForm = document.getElementById('taskForm');
+    const tableBody = document.getElementById('recordsTableBody');
+    const summary = document.getElementById('summary');
+    const popup = document.getElementById('popup');
 
-db.ref('records').on('value', (snapshot) => {
-  tableBody.innerHTML = '';
-  let totalEarnings = 0, completed = 0, pending = 0;
-  let delay = 0;
-  snapshot.forEach(child => {
-    const r = child.val();
-    const tr = document.createElement('tr');
-    tr.style.animationDelay = `${delay}s`;
-    tr.innerHTML = `<td>${r.id}</td><td>${r.client}</td><td>${r.work}</td><td>₹${r.amount}</td><td>${r.date}</td><td>${r.status}</td>`;
-    tableBody.appendChild(tr);
-    delay += 0.1;
-    if (r.type === "earning" || r.type === "task") totalEarnings += r.amount;
-    if (r.status === "completed") completed++;
-    if (r.status === "pending") pending++;
-  });
-  summary.textContent = `Total Earnings: ₹${totalEarnings} | Completed: ${completed} | Pending: ${pending}`;
-});
-</script>
+    function showPopup(message) {
+      popup.textContent = message;
+      popup.classList.add('popup-show');
+      setTimeout(() => {
+        popup.classList.remove('popup-show');
+      }, 2000);
+    }
+
+    taskForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const type = document.getElementById('recordType').value;
+      const client = document.getElementById('client').value.trim();
+      const work = document.getElementById('work').value.trim();
+      const amount = parseFloat(document.getElementById('amount').value);
+      const date = document.getElementById('date').value;
+      const status = document.getElementById('status').value;
+
+      if(!client || !work || !date || isNaN(amount)) {
+        alert("Please fill all required fields correctly.");
+        return;
+      }
+
+      const id = await generateID(type);
+      const newRecord = { id, type, client, work, amount, date, status, timestamp: Date.now() };
+
+      const recordsRef = ref(db, 'records');
+      push(recordsRef, newRecord).then(() => {
+        taskForm.reset();
+        showPopup("Record added successfully!");
+      }).catch(err => alert("Error adding record: " + err.message));
+    });
+
+    async function toggleStatus(key, currentStatus) {
+      const newStatus = currentStatus === 'pending' ? 'completed' : 'pending';
+      const recordRef = ref(db, `records/${key}`);
+      try {
+        await update(recordRef, { status: newStatus });
+      } catch (err) {
+        alert("Error updating status: " + err.message);
+      }
+    }
+
+    function renderRecords(records) {
+      tableBody.innerHTML = '';
+      let totalAmount = 0, completed = 0, pending = 0;
+      let delay = 0;
+      for (const key in records) {
+        const r = records[key];
+        const tr = document.createElement('tr');
+        tr.style.animationDelay = `${delay}s`;
+        tr.innerHTML = `
+          <td>${r.id}</td>
+          <td>${r.client}</td>
+          <td>${r.work}</td>
+          <td>₹${r.amount.toFixed(2)}</td>
+          <td>${r.date}</td>
+          <td>${r.status}</td>
+          <td><button class="edit-btn" data-key="${key}" data-status="${r.status}">${r.status === 'pending' ? 'Mark Done' : 'Mark Pending'}</button></td>
+        `;
+        tableBody.appendChild(tr);
+        delay += 0.1;
+
+        totalAmount += r.amount;
+        if (r.status === "completed") completed++;
+        else if (r.status === "pending") pending++;
+      }
+      summary.textContent = `Total Amount: ₹${totalAmount.toFixed(2)} | Completed: ${completed} | Pending: ${pending}`;
+
+      document.querySelectorAll('.edit-btn').forEach(button => {
+        button.addEventListener('click', () => {
+          const key = button.getAttribute('data-key');
+          const currentStatus = button.getAttribute('data-status');
+          toggleStatus(key, currentStatus);
+        });
+      });
+    }
+
+    const recordsRef = ref(db, 'records');
+    onValue(recordsRef, snapshot => {
+      const data = snapshot.val();
+      if (data) renderRecords(data);
+      else {
+        tableBody.innerHTML = '';
+        summary.textContent = "No records yet.";
+      }
+    });
+  </script>
+
 </body>
 </html>
